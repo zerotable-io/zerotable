@@ -26,8 +26,21 @@ impl Greeter for MyGreeter {
     }
 }
 
+fn hello_fjall() -> fjall::Result<bool> {
+    let db = fjall::Database::builder(".fjall_data").open()?;
+
+    let items = db.keyspace("items", fjall::KeyspaceCreateOptions::default)?;
+
+    items.is_empty()
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    match hello_fjall()? {
+        true => println!("Empty"),
+        false => println!("Has items"),
+    }
+
     let addr = "[::1]:50051".parse()?;
     let greeter = MyGreeter::default();
 
