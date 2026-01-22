@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 use tonic::{Request, Response, Status, transport::Server};
+use zerotable::Engine;
 
 pub mod api {
     pub mod v1alpha1 {
@@ -16,44 +17,54 @@ use api::v1alpha1::{
     UpdateDocumentRequest,
 };
 
-#[derive(Debug, Default)]
-pub struct ZerotableService {}
+#[derive(Clone)]
+pub struct ZerotableService {
+    engine: Engine,
+}
+
+impl ZerotableService {
+    pub fn new(engine: Engine) -> Self {
+        Self { engine }
+    }
+}
 
 #[tonic::async_trait]
 impl Zerotable for ZerotableService {
     async fn get_document(
         &self,
-        request: Request<GetDocumentRequest>,
+        _request: Request<GetDocumentRequest>,
     ) -> Result<Response<Document>, Status> {
-        unimplemented!()
+        Err(Status::unimplemented("not yet implemented"))
     }
 
     async fn create_document(
         &self,
-        request: Request<CreateDocumentRequest>,
+        _request: Request<CreateDocumentRequest>,
     ) -> Result<Response<Document>, Status> {
-        unimplemented!()
+        Err(Status::unimplemented("not yet implemented"))
     }
 
     async fn update_document(
         &self,
-        request: Request<UpdateDocumentRequest>,
+        _request: Request<UpdateDocumentRequest>,
     ) -> Result<Response<Document>, Status> {
-        unimplemented!()
+        Err(Status::unimplemented("not yet implemented"))
     }
 
     async fn delete_document(
         &self,
-        request: Request<DeleteDocumentRequest>,
+        _request: Request<DeleteDocumentRequest>,
     ) -> Result<Response<()>, Status> {
-        unimplemented!()
+        Err(Status::unimplemented("not yet implemented"))
     }
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
-    let service = ZerotableService::default();
+
+    let engine = Engine::open(".zerotable_data")?;
+    let service = ZerotableService::new(engine);
 
     println!("Zerotable listening on {}", addr);
 
