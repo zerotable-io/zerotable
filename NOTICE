@@ -1,0 +1,6 @@
+zerotable
+Copyright 2026 zerotable Authors.
+
+This product includes code based on Google Cloud Firestore API protos
+(https://github.com/googleapis/googleapis/tree/master/google/firestore/v1),
+Copyright 2025 Google LLC, licensed under the Apache License, Version 2.0.
