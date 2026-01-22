@@ -1,51 +1,64 @@
+// Copyright 2026 zerotable.
+// Use of this source code is governed by the Apache 2.0 license that can be
+// found in the LICENSE file.
+
 use tonic::{Request, Response, Status, transport::Server};
 
-use hello_world::greeter_server::{Greeter, GreeterServer};
-use hello_world::{HelloReply, HelloRequest};
-
-pub mod hello_world {
-    tonic::include_proto!("helloworld");
-}
-
-#[derive(Debug, Default)]
-pub struct MyGreeter {}
-
-#[tonic::async_trait]
-impl Greeter for MyGreeter {
-    async fn say_hello(
-        &self,
-        request: Request<HelloRequest>,
-    ) -> Result<Response<HelloReply>, Status> {
-        println!("Got a request: {:?}", request);
-
-        let reply = HelloReply {
-            message: format!("Hello {}!", request.into_inner().name),
-        };
-
-        Ok(Response::new(reply))
+pub mod api {
+    pub mod v1alpha1 {
+        tonic::include_proto!("api.v1alpha1");
     }
 }
 
-fn hello_fjall() -> fjall::Result<bool> {
-    let db = fjall::Database::builder(".fjall_data").open()?;
+use api::v1alpha1::zerotable_server::{Zerotable, ZerotableServer};
+use api::v1alpha1::{
+    CreateDocumentRequest, DeleteDocumentRequest, Document, GetDocumentRequest,
+    UpdateDocumentRequest,
+};
 
-    let items = db.keyspace("items", fjall::KeyspaceCreateOptions::default)?;
+#[derive(Debug, Default)]
+pub struct ZerotableService {}
 
-    items.is_empty()
+#[tonic::async_trait]
+impl Zerotable for ZerotableService {
+    async fn get_document(
+        &self,
+        request: Request<GetDocumentRequest>,
+    ) -> Result<Response<Document>, Status> {
+        unimplemented!()
+    }
+
+    async fn create_document(
+        &self,
+        request: Request<CreateDocumentRequest>,
+    ) -> Result<Response<Document>, Status> {
+        unimplemented!()
+    }
+
+    async fn update_document(
+        &self,
+        request: Request<UpdateDocumentRequest>,
+    ) -> Result<Response<Document>, Status> {
+        unimplemented!()
+    }
+
+    async fn delete_document(
+        &self,
+        request: Request<DeleteDocumentRequest>,
+    ) -> Result<Response<()>, Status> {
+        unimplemented!()
+    }
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    match hello_fjall()? {
-        true => println!("Empty"),
-        false => println!("Has items"),
-    }
-
     let addr = "[::1]:50051".parse()?;
-    let greeter = MyGreeter::default();
+    let service = ZerotableService::default();
+
+    println!("Zerotable listening on {}", addr);
 
     Server::builder()
-        .add_service(GreeterServer::new(greeter))
+        .add_service(ZerotableServer::new(service))
         .serve(addr)
         .await?;
 

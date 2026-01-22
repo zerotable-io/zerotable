@@ -1,0 +1,48 @@
+// Copyright 2026 zerotable.
+// Use of this source code is governed by the Apache 2.0 license that can be
+// found in the LICENSE file.
+//
+// Based on Google Cloud Firestore API protos:
+// https://github.com/googleapis/googleapis/blob/master/google/firestore/v1/firestore.proto
+
+syntax = "proto3"; 
+
+package api.v1alpha1;
+
+import "api/v1alpha1/document.proto";
+import "google/protobuf/empty.proto";
+
+service Zerotable {                                                                                                                   
+    rpc GetDocument(GetDocumentRequest) returns (Document);                                                                              
+    rpc CreateDocument(CreateDocumentRequest) returns (Document);                                                                        
+    rpc UpdateDocument(UpdateDocumentRequest) returns (Document);                                                                        
+    rpc DeleteDocument(DeleteDocumentRequest) returns (google.protobuf.Empty);
+
+    // for now we implement basic crud, this one needs a little bit of planning because of pagination...                                                           
+    // rpc ListDocuments(ListDocumentsRequest) returns (ListDocumentsResponse);                                                             
+}
+
+// For now we keep it simple. But we need to add many things! Like projections and so on
+
+message GetDocumentRequest {
+    string name = 1;
+}
+
+message CreateDocumentRequest {
+    string collection_id = 1;
+
+    // optional, if not provided, we generate one. Must be unique across collections?
+    string document_id = 2;
+
+    Document document = 3;
+}
+
+message UpdateDocumentRequest {
+    Document document = 1;
+    // we need to add a way to choose only some fields to be updated, not the whole document
+}
+
+message DeleteDocumentRequest {
+    string name = 1;
+}
+
