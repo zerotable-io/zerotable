@@ -25,15 +25,23 @@ service Zerotable {
 // For now we keep it simple. But we need to add many things! Like projections and so on
 
 message GetDocumentRequest {
+    // required
+    // the resource name that qualify a document, like 'collection_id/document_id'
     string name = 1;
 }
 
 message CreateDocumentRequest {
+    // required
+    // valid UTF-8 string
+    // max length 1500 bytes
+    // non-empty, no null byte(s) inside the string, no forward slash '/' 
     string collection_id = 1;
 
-    // optional, if not provided, we generate one. Must be unique across collections?
+    // optional, if not provided, we generate one as uuid v7.
+    // if provided, the same validation of collection_id occurs
     string document_id = 2;
 
+    // required
     Document document = 3;
 }
 
@@ -43,6 +51,8 @@ message UpdateDocumentRequest {
 }
 
 message DeleteDocumentRequest {
+    // required
+    // the resource name that qualify a document, like 'collection_id/document_id'
     string name = 1;
 }
 

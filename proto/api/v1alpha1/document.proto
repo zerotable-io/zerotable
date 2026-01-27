@@ -14,12 +14,15 @@ import "google/protobuf/timestamp.proto";
 
 message Document {
     // the fully qualified resource name of the document
-    // how to model this? 
+    // 'collection_id/document_id'
     string name = 1;
 
     map<string, Value> fields = 2;
 
+    // expressed in milliseconds
     google.protobuf.Timestamp create_time = 3;
+
+    // expressed in milliseconds
     google.protobuf.Timestamp update_time = 4;
 }
 
@@ -38,6 +41,7 @@ message Value {
 
         MapValue map_value = 8;
         ArrayValue array_value = 9;
+        // TODO: Add geo type
     }
 }
 
